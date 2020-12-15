@@ -55,6 +55,12 @@ RCT_EXPORT_METHOD(createPaymentRequest: (NSDictionary *)methodData
     self.paymentRequest.paymentSummaryItems = [self getPaymentSummaryItemsFromDetails:details];
     self.paymentRequest.shippingMethods = [self getShippingMethodsFromDetails:details];
     
+    NSString *applicationDataString = methodData[@"applicationData"];
+        if (applicationDataString != nil) {
+            NSData *applicationData = [[NSData alloc] initWithBase64EncodedString:applicationDataString options:0];
+            self.paymentRequest.applicationData = applicationData;
+        }
+    
     [self setRequiredShippingAddressFieldsFromOptions:options];
     
     // Set options so that we can later access it.
