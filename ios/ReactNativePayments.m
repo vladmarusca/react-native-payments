@@ -427,6 +427,34 @@ RCT_EXPORT_METHOD(handleDetailsUpdate: (NSDictionary *)details
     if (token) {
         [paymentResponse setObject:token forKey:@"paymentToken"];
     }
+    
+    if (payment.token.paymentMethod) {
+        PKPaymentMethod *method = payment.token.paymentMethod;
+        
+        NSString *paymentType = @"";
+        switch (method.type) {
+            case PKPaymentMethodTypeCredit:
+                paymentType = @"credit";
+                break;
+            case PKPaymentMethodTypeDebit:
+                paymentType = @"debit";
+                break;
+            case PKPaymentMethodTypePrepaid:
+                paymentType = @"prepaid";
+                break;
+            case PKPaymentMethodTypeStore:
+                paymentType = @"store";
+                break;
+            default:
+                break;
+        }
+        
+        paymentResponse[@"paymentMethod"] = @{
+                                              @"displayName": method.displayName ?: @"",
+                                              @"network": method.network ?: @"",
+                                              @"paymentType": paymentType
+                                            };
+    }
 
     if (payment.billingContact) {
         paymentResponse[@"billingContact"] = [self contactToString:payment.billingContact];
